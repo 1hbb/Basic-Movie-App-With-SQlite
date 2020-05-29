@@ -1,7 +1,7 @@
 public class sqliteDatabase {
 
     public static void createDatabase() throws Exception {
-        Database.setData("");
+
 
         Database.setData("CREATE TABLE IF NOT EXISTS user(\n" +
                 "    user_id INT AUTO_INCREMENT,\n" +
