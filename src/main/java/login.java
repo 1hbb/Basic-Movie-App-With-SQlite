@@ -216,6 +216,8 @@ public class login extends JFrame {
 
 
         final JPanel moviesGrid = new JPanel(new GridLayout(4,4));
+
+
         moviesGrid.setBounds(200,400,1200,450);
 
         moviesGrid.setBackground(Color.GRAY);
@@ -269,10 +271,13 @@ public class login extends JFrame {
 
 
                 try {
-                    ResultSet search = Database.getData("SELECT program_name FROM program " +
-                            "WHERE program_name LIKE '%" + searchBox.getText() + "%'");
-                    ResultSet get_category_code = Database.getData("SELECT type_id FROM type " +
-                            "WHERE type_name LIKE '%" + searchBox.getText() + "%'");
+
+                        ResultSet search = Database.getData("SELECT program_name FROM program " +
+                                "WHERE program_name LIKE '%" + searchBox.getText() + "%'");
+                        ResultSet get_category_code = Database.getData("SELECT type_id FROM type " +
+                                "WHERE type_name LIKE '%" + searchBox.getText() + "%'");
+
+
 
                     while (get_category_code.next()){
                         //System.out.println(search_for_category.getString("type_id"));
@@ -349,6 +354,7 @@ public class login extends JFrame {
                             public void actionPerformed(java.awt.event.ActionEvent e) {
 
                                 JFrame watchMovie = new JFrame(s);
+
 
                                 JLabel movieName = new JLabel(s);
                                 movieName.setBounds(80,5,150,40);
