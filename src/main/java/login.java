@@ -223,9 +223,10 @@ public class login extends JFrame {
         moviesGrid.setBackground(Color.GRAY);
 
 
-        final JPanel mainPage_suggestion = new JPanel();
+        final JPanel mainPage_suggestion = new JPanel(new GridLayout(4,4));
         mainPage_suggestion.setBounds(350,100,800,250);
-        mainPage_suggestion.setBackground(Color.GREEN);
+
+        mainPage_suggestion.setBackground(Color.lightGray);
 
         mainPage_suggestion.setVisible(true);
 
@@ -262,6 +263,33 @@ public class login extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
 
+                try {
+                    ResultSet s1 = Database.getData("SELECT program_genre,program_name,MAX(program_rating)\n" +
+                            "FROM program\n" +
+                            "WHERE program_genre='"+"104"+"'"+";");
+                    ResultSet s = Database.getData("\n" +
+                            "\n" +
+                            "SELECT program_genre,program_name,MAX( program_rating )\n" +
+                            "  FROM program\n" +
+                            " WHERE program_rating < ( SELECT MAX( program_rating )\n" +
+                            "                 FROM program )\n" +
+                            "\n");
+
+                    while (s1.next()){
+                        System.out.println(s1.getString("program_name"));
+                    }
+
+                    while (s.next()){
+                        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!");
+                        System.out.println(s.getString("program_name"));
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+
+
+
                 // calculate movie played time variables
                 final long[] startTime = {0};
 
@@ -293,7 +321,7 @@ public class login extends JFrame {
                                     JFrame watchMovie = new JFrame(s);
 
                                     JLabel movieName = new JLabel(s);
-                                    movieName.setBounds(30,5,150,40);
+                                    movieName.setBounds(30,5,250,40);
 
                                     JButton watchButton = new JButton("watch");
                                     watchButton.setBounds(30,180,130,50);
@@ -326,7 +354,7 @@ public class login extends JFrame {
                                     watchMovie.add(movieName);
 
 
-                                    watchMovie.setSize(300,300);
+                                    watchMovie.setSize(600,400);
                                     watchMovie.setLayout(null);
                                     watchMovie.setLocationRelativeTo(null);
                                     watchMovie.setVisible(true);
@@ -338,7 +366,8 @@ public class login extends JFrame {
                                 }
                             });
 
-                            moviesGrid.add(b);
+
+                            mainPage_suggestion.add(b);
                         }
                     }
 
@@ -357,13 +386,21 @@ public class login extends JFrame {
 
 
                                 JLabel movieName = new JLabel(s);
-                                movieName.setBounds(80,5,150,40);
+                                movieName.setBounds(80,5,250,40);
+
+                                JLabel giveRating = new JLabel("Give Rating");
+                                giveRating.setBounds(280,5,250,40);
+
+                                /*JTextField ratingTextfield = new JTextField();
+                                ratingTextfield.setBounds();*/
 
                                 JButton watchButton = new JButton("watch");
                                 watchButton.setBounds(30,180,130,50);
 
                                 JButton stopButton = new JButton("stop");
                                 stopButton.setBounds(165,180,130,50);
+
+
 
                                 watchButton.addActionListener(new ActionListener() {
                                     @Override
@@ -386,9 +423,9 @@ public class login extends JFrame {
                                 watchMovie.add(stopButton);
                                 watchMovie.add(watchButton);
                                 watchMovie.add(movieName);
+                                watchMovie.add(giveRating);
 
-
-                                watchMovie.setSize(300,300);
+                                watchMovie.setSize(600,400);
                                 watchMovie.setLayout(null);
                                 watchMovie.setLocationRelativeTo(null);
                                 watchMovie.setVisible(true);
@@ -510,6 +547,14 @@ public class login extends JFrame {
                         // if everythin is ok
                         suggest = 1;
                         if (suggest == 1){
+                            //
+                            Database.getData("\n" +
+                                    "\n" +
+                                    "SELECT MAX( program_rating )\n" +
+                                    "  FROM program\n" +
+                                    " WHERE program_rating < ( SELECT MAX(program_rating)\n" +
+                                    "                 FROM program )\n" +
+                                    "\n");
                             mainPage_suggestion.setVisible(true);
 
                         }
