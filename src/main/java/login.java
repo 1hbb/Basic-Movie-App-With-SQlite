@@ -263,16 +263,19 @@ public class login extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
 
-                try {
+
+
+                /*try {
                     ResultSet s1 = Database.getData("SELECT program_genre,program_name,MAX(program_rating)\n" +
                             "FROM program\n" +
-                            "WHERE program_genre='"+"104"+"'"+";");
+                            "WHERE program_genre='"+104+"'"+";");
                     ResultSet s = Database.getData("\n" +
                             "\n" +
                             "SELECT program_genre,program_name,MAX( program_rating )\n" +
                             "  FROM program\n" +
                             " WHERE program_rating < ( SELECT MAX( program_rating )\n" +
                             "                 FROM program )\n" +
+                            "AND program_genre IN ('" + 104 + "')" +
                             "\n");
 
                     while (s1.next()){
@@ -285,7 +288,7 @@ public class login extends JFrame {
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                }
+                }*/
 
 
 
@@ -404,7 +407,7 @@ public class login extends JFrame {
                             });
 
 
-                            mainPage_suggestion.add(b);
+
                         }
                     }
 
@@ -539,6 +542,7 @@ public class login extends JFrame {
                         System.out.println("Login Succes");
                         //ResultSet userName = Database.getData("SELECT * FROM users WH");
                         welcome_username.setText("Hoşgeldiniz "+res.getString("user_name"));
+
                         mainPage.setVisible(true);
                         f.dispose();
                     }
@@ -613,18 +617,7 @@ public class login extends JFrame {
 
                         // if everythin is ok
                         suggest = 1;
-                        if (suggest == 1){
-                            //
-                            Database.getData("\n" +
-                                    "\n" +
-                                    "SELECT MAX( program_rating )\n" +
-                                    "  FROM program\n" +
-                                    " WHERE program_rating < ( SELECT MAX(program_rating)\n" +
-                                    "                 FROM program )\n" +
-                                    "\n");
-                            mainPage_suggestion.setVisible(true);
 
-                        }
                         f.setVisible(true);
                         create_account_frame.dispose();
 
@@ -712,6 +705,218 @@ public class login extends JFrame {
                         control++;
                     }
                 }
+
+                if (suggest == 1){
+                    try {
+                        mainPage_suggestion.removeAll();
+                        for (int i = 0; i < 3; i++) {
+                            ResultSet s1 = Database.getData("SELECT program_genre,program_name,MAX(program_rating)\n" +
+                                    "FROM program\n" +
+                                    "WHERE program_genre='"+ list.get(i) +"'"+";");
+
+                            final ResultSet  s = Database.getData("SELECT * FROM program\n" +
+                                    " WHERE program_genre='"+ list.get(i) +"'"+
+                                    " LIMIT 1 "+
+                                    ";");
+
+                            while (s1.next() ){
+                                final String temp = s1.getString("program_name");
+                                JButton b = new JButton(temp);
+
+                                b.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+
+                                        JFrame watchMovie = new JFrame(temp);
+
+
+                                        JLabel movieName = new JLabel(temp);
+                                        movieName.setBounds(80,5,250,40);
+
+                                        JLabel giveRating = new JLabel("Give Rating(1-10)");
+                                        giveRating.setBounds(280,5,120,40);
+
+                                        final JTextField ratingTextfield = new JTextField();
+                                        ratingTextfield.setBounds(400,5,50,40);
+
+                                        JButton giveRatingButton = new JButton("OK");
+                                        giveRatingButton.setBounds(500,5,50,40);
+
+                                        giveRatingButton.addActionListener(new ActionListener() {
+                                            @Override
+                                            public void actionPerformed(ActionEvent e) {
+                                                if ( Integer.parseInt(ratingTextfield.getText()) > 10 ){
+                                                    JOptionPane.showMessageDialog(null,"Puan > 10 olamaz");
+                                                }
+                                                else {
+                                                    try {
+                                                        Database.setData("UPDATE program SET program_rating='"+
+                                                                Double.parseDouble(ratingTextfield.getText()) + "'" +
+                                                                " WHERE program_name='"+
+                                                                s + "'" +
+                                                                ";");
+                                                    } catch (Exception ex) {
+                                                        ex.printStackTrace();
+                                                    }
+                                                }
+                                            }
+                                        });
+
+                                /*JTextField ratingTextfield = new JTextField();
+                                ratingTextfield.setBounds();*/
+
+                                        JButton watchButton = new JButton("watch");
+                                        watchButton.setBounds(30,180,130,50);
+
+                                        JButton stopButton = new JButton("stop");
+                                        stopButton.setBounds(165,180,130,50);
+
+                                        final long[] startTime = {0};
+
+                                        watchButton.addActionListener(new ActionListener() {
+                                            @Override
+                                            public void actionPerformed(ActionEvent e) {
+                                                // Start Playing Movie
+
+                                                startTime[0] = System.currentTimeMillis();
+
+                                            }
+                                        });
+
+                                        stopButton.addActionListener(new ActionListener() {
+                                            @Override
+                                            public void actionPerformed(ActionEvent e) {
+                                                //stop movie
+                                                long endTime   = System.currentTimeMillis();
+                                                long totalTime = endTime - startTime[0];
+                                                System.out.println((int)totalTime/1000);
+
+                                            }
+                                        });
+
+                                        watchMovie.add(stopButton);
+                                        watchMovie.add(watchButton);
+                                        watchMovie.add(movieName);
+                                        watchMovie.add(giveRating);
+                                        watchMovie.add(ratingTextfield);
+                                        watchMovie.add(giveRatingButton);
+
+                                        watchMovie.setSize(600,400);
+                                        watchMovie.setLayout(null);
+                                        watchMovie.setLocationRelativeTo(null);
+                                        watchMovie.setVisible(true);
+                                        watchMovie.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                                    }
+                                });
+
+                                mainPage_suggestion.add(b);
+                            }
+                            while (s.next() ){
+                                final String temp = s.getString("program_name");
+                                JButton b = new JButton(temp);
+
+                                b.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        JFrame watchMovie = new JFrame(temp);
+
+
+                                        JLabel movieName = new JLabel(temp);
+                                        movieName.setBounds(80,5,250,40);
+
+                                        JLabel giveRating = new JLabel("Give Rating(1-10)");
+                                        giveRating.setBounds(280,5,120,40);
+
+                                        final JTextField ratingTextfield = new JTextField();
+                                        ratingTextfield.setBounds(400,5,50,40);
+
+                                        JButton giveRatingButton = new JButton("OK");
+                                        giveRatingButton.setBounds(500,5,50,40);
+
+                                        giveRatingButton.addActionListener(new ActionListener() {
+                                            @Override
+                                            public void actionPerformed(ActionEvent e) {
+                                                if ( Integer.parseInt(ratingTextfield.getText()) > 10 ){
+                                                    JOptionPane.showMessageDialog(null,"Puan > 10 olamaz");
+                                                }
+                                                else {
+                                                    try {
+                                                        Database.setData("UPDATE program SET program_rating='"+
+                                                                Double.parseDouble(ratingTextfield.getText()) + "'" +
+                                                                " WHERE program_name='"+
+                                                                s + "'" +
+                                                                ";");
+                                                    } catch (Exception ex) {
+                                                        ex.printStackTrace();
+                                                    }
+                                                }
+                                            }
+                                        });
+
+                                /*JTextField ratingTextfield = new JTextField();
+                                ratingTextfield.setBounds();*/
+
+                                        JButton watchButton = new JButton("watch");
+                                        watchButton.setBounds(30,180,130,50);
+
+                                        JButton stopButton = new JButton("stop");
+                                        stopButton.setBounds(165,180,130,50);
+
+                                        final long[] startTime = {0};
+
+                                        watchButton.addActionListener(new ActionListener() {
+                                            @Override
+                                            public void actionPerformed(ActionEvent e) {
+                                                // Start Playing Movie
+
+                                                startTime[0] = System.currentTimeMillis();
+
+                                            }
+                                        });
+
+                                        stopButton.addActionListener(new ActionListener() {
+                                            @Override
+                                            public void actionPerformed(ActionEvent e) {
+                                                //stop movie
+                                                long endTime   = System.currentTimeMillis();
+                                                long totalTime = endTime - startTime[0];
+                                                System.out.println((int)totalTime/1000);
+
+                                            }
+                                        });
+
+                                        watchMovie.add(stopButton);
+                                        watchMovie.add(watchButton);
+                                        watchMovie.add(movieName);
+                                        watchMovie.add(giveRating);
+                                        watchMovie.add(ratingTextfield);
+                                        watchMovie.add(giveRatingButton);
+
+                                        watchMovie.setSize(600,400);
+                                        watchMovie.setLayout(null);
+                                        watchMovie.setLocationRelativeTo(null);
+                                        watchMovie.setVisible(true);
+                                        watchMovie.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                                    }
+                                });
+
+                                mainPage_suggestion.add(b);
+                            }
+
+                        }
+                        mainPage_suggestion.invalidate();
+                        mainPage_suggestion.revalidate();
+                        mainPage_suggestion.repaint();
+
+
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+
+
+
 
 
 
