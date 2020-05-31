@@ -320,8 +320,41 @@ public class login extends JFrame {
 
                                     JFrame watchMovie = new JFrame(s);
 
+
                                     JLabel movieName = new JLabel(s);
-                                    movieName.setBounds(30,5,250,40);
+                                    movieName.setBounds(80,5,250,40);
+
+                                    JLabel giveRating = new JLabel("Give Rating(1-10)");
+                                    giveRating.setBounds(280,5,120,40);
+
+                                    final JTextField ratingTextfield = new JTextField();
+                                    ratingTextfield.setBounds(400,5,50,40);
+
+                                    JButton giveRatingButton = new JButton("OK");
+                                    giveRatingButton.setBounds(500,5,50,40);
+
+                                    giveRatingButton.addActionListener(new ActionListener() {
+                                        @Override
+                                        public void actionPerformed(ActionEvent e) {
+                                            if ( Integer.parseInt(ratingTextfield.getText()) > 10 ){
+                                                JOptionPane.showMessageDialog(null,"Puan > 10 olamaz");
+                                            }
+                                            else {
+                                                try {
+                                                    Database.setData("UPDATE program SET program_rating='"+
+                                                            Double.parseDouble(ratingTextfield.getText()) + "'" +
+                                                            " WHERE program_name='"+
+                                                            s + "'" +
+                                                            ";");
+                                                } catch (Exception ex) {
+                                                    ex.printStackTrace();
+                                                }
+                                            }
+                                        }
+                                    });
+
+                                /*JTextField ratingTextfield = new JTextField();
+                                ratingTextfield.setBounds();*/
 
                                     JButton watchButton = new JButton("watch");
                                     watchButton.setBounds(30,180,130,50);
@@ -329,12 +362,14 @@ public class login extends JFrame {
                                     JButton stopButton = new JButton("stop");
                                     stopButton.setBounds(165,180,130,50);
 
+
+
                                     watchButton.addActionListener(new ActionListener() {
                                         @Override
                                         public void actionPerformed(ActionEvent e) {
                                             // Start Playing Movie
+                                                startTime[0] = System.currentTimeMillis();
 
-                                            startTime[0] = System.currentTimeMillis();
                                         }
                                     });
 
@@ -352,7 +387,9 @@ public class login extends JFrame {
                                     watchMovie.add(stopButton);
                                     watchMovie.add(watchButton);
                                     watchMovie.add(movieName);
-
+                                    watchMovie.add(giveRating);
+                                    watchMovie.add(ratingTextfield);
+                                    watchMovie.add(giveRatingButton);
 
                                     watchMovie.setSize(600,400);
                                     watchMovie.setLayout(null);
@@ -388,8 +425,34 @@ public class login extends JFrame {
                                 JLabel movieName = new JLabel(s);
                                 movieName.setBounds(80,5,250,40);
 
-                                JLabel giveRating = new JLabel("Give Rating");
-                                giveRating.setBounds(280,5,250,40);
+                                JLabel giveRating = new JLabel("Give Rating(1-10)");
+                                giveRating.setBounds(280,5,120,40);
+
+                                final JTextField ratingTextfield = new JTextField();
+                                ratingTextfield.setBounds(400,5,50,40);
+
+                                JButton giveRatingButton = new JButton("OK");
+                                giveRatingButton.setBounds(500,5,50,40);
+
+                                giveRatingButton.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        if ( Integer.parseInt(ratingTextfield.getText()) > 10 ){
+                                            JOptionPane.showMessageDialog(null,"Puan > 10 olamaz");
+                                        }
+                                        else {
+                                            try {
+                                                Database.setData("UPDATE program SET program_rating='"+
+                                                        Double.parseDouble(ratingTextfield.getText()) + "'" +
+                                                        " WHERE program_name='"+
+                                                        s + "'" +
+                                                        ";");
+                                            } catch (Exception ex) {
+                                                ex.printStackTrace();
+                                            }
+                                        }
+                                    }
+                                });
 
                                 /*JTextField ratingTextfield = new JTextField();
                                 ratingTextfield.setBounds();*/
@@ -406,7 +469,7 @@ public class login extends JFrame {
                                     @Override
                                     public void actionPerformed(ActionEvent e) {
                                         // Start Playing Movie
-
+                                        startTime[0] = System.currentTimeMillis();
 
                                     }
                                 });
@@ -415,7 +478,9 @@ public class login extends JFrame {
                                     @Override
                                     public void actionPerformed(ActionEvent e) {
                                         //stop movie
-
+                                        long endTime   = System.currentTimeMillis();
+                                        long totalTime = endTime - startTime[0];
+                                        System.out.println((int)totalTime/1000);
 
                                     }
                                 });
@@ -424,6 +489,8 @@ public class login extends JFrame {
                                 watchMovie.add(watchButton);
                                 watchMovie.add(movieName);
                                 watchMovie.add(giveRating);
+                                watchMovie.add(ratingTextfield);
+                                watchMovie.add(giveRatingButton);
 
                                 watchMovie.setSize(600,400);
                                 watchMovie.setLayout(null);
